@@ -2,6 +2,7 @@
 #define TCPSERVER_H
 
 #include "aircraft.h"
+#include "aircraftdb.h"
 
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -38,6 +39,7 @@ signals:
 
 private:
     AircraftsJsonController controller;  // объект для работы с json
+    AircraftDB airdb;
 };
 
 #endif // MYSERVER_H

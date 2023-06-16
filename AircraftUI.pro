@@ -10,12 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     aircraft.cpp \
+    aircraftdb.cpp \
     main.cpp \
     mainwindow.cpp \
     tcpserver.cpp
 
 HEADERS += \
     aircraft.h \
+    aircraftdb.h \
     mainwindow.h \
     tcpserver.h
 
@@ -26,3 +28,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    README.md
