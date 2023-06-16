@@ -5,24 +5,24 @@ AircraftDB::AircraftDB(QObject *parent)
 {
     db = QSqlDatabase::addDatabase("QPSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("yatube");
+    db.setDatabaseName("aircrafts");
     db.setUserName("aircraft");
     db.setPassword("aircraft");
-    ok = db.open();
 }
 
 
 void AircraftDB::create()
 {
-//    Создает таблицы в БД
 //    TODO: доделать класс для записи в БД
-//    TODO: добавить запрос на CREATE DATABASE aircraft;
-    if (ok)
+    if (db.open())
     {
         qDebug() << "Open DB and can create";
         QSqlQuery *query = new QSqlQuery(db);
 
-        query->exec("CREATE TABLE IF NOT EXISTS aircrafts777("
+        query->exec("DROP TABLE IF EXISTS aircraft CASCADE;");
+        query->exec("DROP TABLE IF EXISTS flights;");
+
+        query->exec("CREATE TABLE IF NOT EXISTS aircraft("
                     "id SERIAL PRIMARY KEY,"
                     "reg_number VARCHAR(30) UNIQUE, "
                     "url_aircraft TEXT UNIQUE, "
@@ -37,7 +37,7 @@ void AircraftDB::create()
                     "age TEXT"
                     ");");
 
-        query->exec("CREATE TABLE IF NOT EXISTS flights777("
+        query->exec("CREATE TABLE IF NOT EXISTS flights("
                     "id SERIAL PRIMARY KEY,"
                     "aircraft_id INTEGER, "
                     "date TEXT, "
@@ -49,25 +49,28 @@ void AircraftDB::create()
                     "atd TEXT, "
                     "sta TEXT, "
                     "status TEXT, "
-                    "FOREIGN KEY (aircraft_id) REFERENCES aircrafts777 (id)"
+                    "FOREIGN KEY (aircraft_id) REFERENCES aircraft (id)"
                     ");");
         delete query;
+    }
+    db.close();
+    if (!db.isOpen())
+    {
+        qDebug() << "Close DB";
     }
 }
 
 
 void AircraftDB::insert(QList<Aircraft>* allAircraft)
 {
-    if (ok)
+    if (db.open())
     {
-        qDebug() << "Write in DB";
+        qDebug() << "Open DB and write";
         QSqlQuery* query = new QSqlQuery(db);
 
         foreach (Aircraft aircraft, *allAircraft)
         {
-            qDebug() << aircraft.regNumber;
-//                    airdb.insert(aircraft);
-            query->prepare("INSERT INTO aircrafts777 ("
+            query->prepare("INSERT INTO aircraft ("
                 "reg_number, url_aircraft, aircraft, airline, operator, "
                 "type_code, code_airline, code_operator, mode_s, msn, age) "
                 "VALUES ("
@@ -87,11 +90,11 @@ void AircraftDB::insert(QList<Aircraft>* allAircraft)
             query->bindValue(":age", aircraft.age);
             query->exec();
 
+            int aircraft_id = query->lastInsertId().toInt();
+
             foreach (FlightHistory oneHistory, aircraft.allFlightsHistory)
             {
-//                        qDebug() << oneHistory.status;
-
-                query->prepare("INSERT INTO flights777 ("
+                query->prepare("INSERT INTO flights ("
                                "aircraft_id, date, flight_from, flight_to, "
                                "flight, flight_time, std, atd, sta, status) "
                        "VALUES ("
@@ -99,7 +102,7 @@ void AircraftDB::insert(QList<Aircraft>* allAircraft)
                                ":flight, :flight_time, :std, :atd, :sta, :status"
                                ")");
 
-                query->bindValue(":aircraft_id", aircraft.regNumber);
+                query->bindValue(":aircraft_id", aircraft_id);
                 query->bindValue(":date", oneHistory.date);
                 query->bindValue(":flight_from", oneHistory.flight_from);
                 query->bindValue(":flight_to", oneHistory.flight_to);
