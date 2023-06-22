@@ -26,8 +26,6 @@ public:
     QJsonDocument jDoc;  // преобразование пришедших данных в json
     QJsonParseError jDocError;  // отчёт об ошибках при преобразовании в json
 
-    QSqlDatabase db;
-
 public slots:
     void startServer();
     void incomingConnection(qintptr socketDescriptor);

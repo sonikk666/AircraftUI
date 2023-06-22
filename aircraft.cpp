@@ -2,29 +2,29 @@
 #include <QVariant>
 
 // Ключи параметров самолёта
-#define REG_NUMBER "reg_number"
-#define URL_AIRCRAFT "url_aircraft"
-#define AIRCRAFT "aircraft"
-#define AIRLINE "airline"
-#define OPERATOR "operator"
-#define TYPE_CODE "type_code"
-#define CODE_AIRLINE "code_airline"
-#define CODE_OPERATOR "code_operator"
-#define MODE_S "mode_s"
-#define MSN "serial_number_(msn)"
-#define AGE "age"
-#define FLIGHTS_HISTORY "flights_history"
+const char* REG_NUMBER = "reg_number";
+const char* URL_AIRCRAFT = "url_aircraft";
+const char* AIRCRAFT = "aircraft";
+const char* AIRLINE = "airline";
+const char* OPERATOR = "operator";
+const char* TYPE_CODE = "type_code";
+const char* CODE_AIRLINE = "code_airline";
+const char* CODE_OPERATOR = "code_operator";
+const char* MODE_S = "mode_s";
+const char* MSN = "serial_number_(msn)";
+const char* AGE = "age";
+const char* FLIGHTS_HISTORY = "flights_history";
 
 // Ключи истории полёта
-#define H_FLIGHT "flight"
-#define H_DATE "date"
-#define H_TIME "time"
-#define H_LANDED "landed"
-#define H_STD "std"
-#define H_ATD "atd"
-#define H_STA "sta"
-#define H_FROM "from"
-#define H_TO "to"
+const char* H_FLIGHT = "flight";
+const char* H_DATE = "date";
+const char* H_TIME = "time";
+const char* H_LANDED = "landed";
+const char* H_STD = "std";
+const char* H_ATD = "atd";
+const char* H_STA = "sta";
+const char* H_FROM = "from";
+const char* H_TO = "to";
 
 Aircraft::Aircraft(){}
 
@@ -33,38 +33,38 @@ Aircraft::~Aircraft(){}
 
 Aircraft::Aircraft(QJsonObject jObj)
 {
-    regNumber = jObj.value(REG_NUMBER).toString();
-    urlAircraft = jObj.value(URL_AIRCRAFT).toString();
-    aircraft = jObj.value(AIRCRAFT).toString();
-    airline = jObj.value(AIRLINE).toString();
-    nameOperator = jObj.value(OPERATOR).toString();
-    typeCode = jObj.value(TYPE_CODE).toString();
-    codeAirlane = jObj.value(CODE_AIRLINE).toString();
-    codeOperator  = jObj.value(CODE_OPERATOR).toString();
-    modeS = jObj.value(MODE_S).toString();
-    msn = jObj.value(MSN).toString();
-    age = jObj.value(AGE).toString();
+    m_regNumber = jObj.value(REG_NUMBER).toString();
+    m_urlAircraft = jObj.value(URL_AIRCRAFT).toString();
+    m_aircraft = jObj.value(AIRCRAFT).toString();
+    m_airline = jObj.value(AIRLINE).toString();
+    m_nameOperator = jObj.value(OPERATOR).toString();
+    m_typeCode = jObj.value(TYPE_CODE).toString();
+    m_codeAirlane = jObj.value(CODE_AIRLINE).toString();
+    m_codeOperator  = jObj.value(CODE_OPERATOR).toString();
+    m_modeS = jObj.value(MODE_S).toString();
+    m_msn = jObj.value(MSN).toString();
+    m_age = jObj.value(AGE).toString();
 
     QJsonArray jAllFlightsHistory = jObj.value(FLIGHTS_HISTORY).toArray();
     for (QJsonValue jOne_history : jAllFlightsHistory)
     {
         QJsonObject jHistory = jOne_history.toObject();
-        allFlightsHistory.append(FlightHistory(jHistory));
+        m_allFlightsHistory.append(FlightHistory(jHistory));
     }
 }
 
 
 FlightHistory::FlightHistory(QJsonObject jObj)
 {
-    flight = jObj.value(H_FLIGHT).toString();
-    date = jObj.value(H_DATE).toVariant().toString();
-    flight_time = jObj.value(H_TIME).toString();
-    status = jObj.value(H_LANDED).toString();
-    std = jObj.value(H_STD).toString();
-    atd = jObj.value(H_ATD).toString();
-    sta = jObj.value(H_STA).toString();
-    flight_from = jObj.value(H_FROM).toString();
-    flight_to = jObj.value(H_TO).toString();
+    m_flight = jObj.value(H_FLIGHT).toString();
+    m_date = jObj.value(H_DATE).toVariant().toString();
+    m_flightTime = jObj.value(H_TIME).toString();
+    m_status = jObj.value(H_LANDED).toString();
+    m_std = jObj.value(H_STD).toString();
+    m_atd = jObj.value(H_ATD).toString();
+    m_sta = jObj.value(H_STA).toString();
+    m_flightFrom = jObj.value(H_FROM).toString();
+    m_flightTo = jObj.value(H_TO).toString();
 }
 
 
@@ -77,16 +77,16 @@ AircraftsJsonController::AircraftsJsonController(QObject *parent)
 
 void AircraftsJsonController::append(QJsonObject jAircraft)
 {
-    _allAircrafts.append(Aircraft(jAircraft));
+    m_allAircrafts.append(Aircraft(jAircraft));
 }
 
 
 QList<Aircraft> AircraftsJsonController::get_list()
 {
-    return _allAircrafts;
+    return m_allAircrafts;
 }
 
 void AircraftsJsonController::clear()
 {
-    _allAircrafts.clear();
+    m_allAircrafts.clear();
 }

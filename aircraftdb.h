@@ -14,6 +14,7 @@ public:
     explicit AircraftDB(QObject *parent = nullptr);
     QSqlDatabase db;
     bool ok;
+
     void create();  // создаёт таблицы в БД
     void insert(QList<Aircraft>* allAircraft);  // записывает в БД
 };

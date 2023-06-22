@@ -68,7 +68,7 @@ void AircraftDB::insert(QList<Aircraft>* allAircraft)
         qDebug() << "Open DB and write";
         QSqlQuery* query = new QSqlQuery(db);
 
-        foreach (Aircraft aircraft, *allAircraft)
+        for (auto aircraft : *allAircraft)
         {
             query->prepare("INSERT INTO aircraft ("
                 "reg_number, url_aircraft, aircraft, airline, operator, "
@@ -77,22 +77,22 @@ void AircraftDB::insert(QList<Aircraft>* allAircraft)
                 ":reg_number, :url_aircraft, :aircraft, :airline, :operator, "
                 ":type_code, :code_airline, :code_operator, :mode_s, :msn, :age"
             ")");
-            query->bindValue(":reg_number", aircraft.regNumber);
-            query->bindValue(":url_aircraft", aircraft.urlAircraft);
-            query->bindValue(":aircraft", aircraft.aircraft);
-            query->bindValue(":airline", aircraft.airline);
-            query->bindValue(":operator", aircraft.nameOperator);
-            query->bindValue(":type_code", aircraft.typeCode);
-            query->bindValue(":code_airline", aircraft.codeAirlane);
-            query->bindValue(":code_operator", aircraft.codeOperator);
-            query->bindValue(":mode_s", aircraft.modeS);
-            query->bindValue(":msn", aircraft.msn);
-            query->bindValue(":age", aircraft.age);
+            query->bindValue(":reg_number", aircraft.get_m_regNumber());
+            query->bindValue(":url_aircraft", aircraft.get_m_urlAircraft());
+            query->bindValue(":aircraft", aircraft.get_m_aircraft());
+            query->bindValue(":airline", aircraft.get_m_airline());
+            query->bindValue(":operator", aircraft.get_m_nameOperator());
+            query->bindValue(":type_code", aircraft.get_m_typeCode());
+            query->bindValue(":code_airline", aircraft.get_m_codeAirlane());
+            query->bindValue(":code_operator", aircraft.get_m_codeOperator());
+            query->bindValue(":mode_s", aircraft.get_m_modeS());
+            query->bindValue(":msn", aircraft.get_m_msn());
+            query->bindValue(":age", aircraft.get_m_age());
             query->exec();
 
             int aircraft_id = query->lastInsertId().toInt();
 
-            foreach (FlightHistory oneHistory, aircraft.allFlightsHistory)
+            for (auto oneHistory : aircraft.get_m_allFlightsHistory())
             {
                 query->prepare("INSERT INTO flights ("
                                "aircraft_id, date, flight_from, flight_to, "
@@ -103,15 +103,15 @@ void AircraftDB::insert(QList<Aircraft>* allAircraft)
                                ")");
 
                 query->bindValue(":aircraft_id", aircraft_id);
-                query->bindValue(":date", oneHistory.date);
-                query->bindValue(":flight_from", oneHistory.flight_from);
-                query->bindValue(":flight_to", oneHistory.flight_to);
-                query->bindValue(":flight", oneHistory.flight);
-                query->bindValue(":flight_time", oneHistory.flight_time);
-                query->bindValue(":std", oneHistory.std);
-                query->bindValue(":atd", oneHistory.atd);
-                query->bindValue(":sta", oneHistory.sta);
-                query->bindValue(":status", oneHistory.status);
+                query->bindValue(":date", oneHistory.get_m_date());
+                query->bindValue(":flight_from", oneHistory.get_m_flightFrom());
+                query->bindValue(":flight_to", oneHistory.get_m_flightTo());
+                query->bindValue(":flight", oneHistory.get_m_flight());
+                query->bindValue(":flight_time", oneHistory.get_m_flightTime());
+                query->bindValue(":std", oneHistory.get_m_std());
+                query->bindValue(":atd", oneHistory.get_m_atd());
+                query->bindValue(":sta", oneHistory.get_m_sta());
+                query->bindValue(":status", oneHistory.get_m_status());
                 query->exec();
             }
         }

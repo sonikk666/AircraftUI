@@ -23,10 +23,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
 {
     socket = new QTcpSocket(this);
     socket->setSocketDescriptor(socketDescriptor);
-
     connect(socket, &QTcpSocket::readyRead, this, &Server::sockReady);
     connect(socket, &QTcpSocket::disconnected, this, &Server::sockDisc);
-
     qDebug() << socketDescriptor << " Client connected";
 }
 
@@ -62,8 +60,8 @@ void Server::sockReady()
                 controller.append(aircraft.toObject());
             }
             QList<Aircraft>* allAircraft = new QList(controller.get_list());
+            // Отправка данных в MainWindow
             emit aircraftsSignal(allAircraft);
-
             // Запись в БД
             airdb.insert(allAircraft);
         }
